@@ -1,0 +1,24 @@
+{
+  "name": "discord-xmpp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tskubicki/discord-xmpp.git"
+  },
+  "author": "Thomas Skubicki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tskubicki/discord-xmpp/issues"
+  },
+  "homepage": "https://github.com/tskubicki/discord-xmpp#readme",
+  "dependencies": {
+    "discord.js": "^8.0.0",
+    "node-xmpp-client": "^3.0.2",
+    "tinyurl": "^1.1.0"
+  }
+}
