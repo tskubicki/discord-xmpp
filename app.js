@@ -53,43 +53,43 @@ discord.on("message", function(message) {
 
 	//ignore messages from the bot itself, and any messages except those from this channel
 	if (message.author.id === discord.user.id || 
-		  message.channel.id != DISCORD_CHATROOM_ID)
+		message.channel.id != DISCORD_CHATROOM_ID)
 		return;
 
 	var content = new String (message.content);
 	var isMe = false; //is this message using a '/me'
 
   //handle messages with mentions
-	if (message.mentions.length){
-		message.mentions.forEach(function(mention){
-			content = content.replace(
-				new RegExp('<@(!|)' + mention.id + '>', 'g'),
-				'@' + mention.username
-			);
-		});		
-	}
+  if (message.mentions.length){
+  	message.mentions.forEach(function(mention){
+  		content = content.replace(
+  			new RegExp('<@(!|)' + mention.id + '>', 'g'),
+  			'@' + mention.username
+  			);
+  	});		
+  }
 
 	//handle Discord '/me' command -- its represented by an underscore at the start and end of the content
 	if (message.content[0] == '_' && message.content[message.content.length - 1] == '_'){		
 		isMe = true;
-	  content = content.substr(1, content.length-2);	   
+		content = content.substr(1, content.length-2);	   
 	}
 	
 	if (message.attachments.length){
 		TinyURL.shorten(message.attachments[0].url,function(res){
 			client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
-			.c('body')
-			.t(message.author.username + 
-			  (isMe ? ' ' : ': ') +
-			  (message.attachments.length ? res + ' ' : '') + 
-				content));
-			});
+				.c('body')
+				.t(message.author.username + 
+					(isMe ? ' ' : ': ') +
+					(message.attachments.length ? res + ' ' : '') + 
+					content));
+		});
 	}else{
 		client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
-		.c('body')
-		.t(message.author.username + 
-		  (isMe ? ' ' : ': ') +		  
-			content));
+			.c('body')
+			.t(message.author.username + 
+				(isMe ? ' ' : ': ') +		  
+				content));
 	}
 
 });
@@ -106,8 +106,8 @@ client.on('stanza', function(stanza) {
 
 	// ignore everything that isn't from the chatroom, or came from the bot itself
 	if (stanza.is('message') &&
-	 	  stanza.attrs.type === 'groupchat' &&	   
-	 	  stanza.attrs.from !== ROOM_JID  + '/' + XMPP_ALIAS){
+		stanza.attrs.type === 'groupchat' &&	   
+		stanza.attrs.from !== ROOM_JID  + '/' + XMPP_ALIAS){
 
 		var body = stanza.getChild('body');
 
