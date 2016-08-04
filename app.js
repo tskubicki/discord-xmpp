@@ -1,8 +1,11 @@
+#!/usr/bin/env node
 const DISCORD_API_TOKEN = 'YOUR_DISCORD_API_TOKEN';
 const DISCORD_CHATROOM_ID = 'YOUR_DISCORD_CHATROOM_ID';
 const JID = 'username@XmppServerName';
 const PASSWORD = 'YOUR_PASSWORD';
 const ROOM_JID = 'chatroom@conference.XmppServerName';
+const HOST = 'XmppServerName';
+const PORT = 5222;
 
 //The name this bot will use in your XMPP Chatroom. 
 //You can change this to whatever you want
@@ -15,9 +18,11 @@ var TinyURL = require ('tinyurl');
 //initialize node-xmpp-client
 var client = new XMPP({
 	jid: JID,
-	PASSWORD: PASSWORD,
-	preferred: 'PLAIN',
-	reconnect: true
+	password: PASSWORD,
+	preferredSaslMechanism: 'PLAIN',
+	reconnect: true,
+	host: HOST,
+	port: PORT
 });
 
 //initialize discord.js

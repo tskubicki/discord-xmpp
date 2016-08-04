@@ -1,0 +1,14 @@
+[Unit]
+Description=discord-xmpp
+
+[Service]
+ExecStart=/home/descstudio/discord-xmpp/app.js
+Restart=always
+User=descstudio
+Group=descstudio
+Environment=PATH=/usr/bin:/usr/local/bin:/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/descstudio/discord-xmpp
+
+[Install]
+WantedBy=multi-user.target
