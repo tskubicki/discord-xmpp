@@ -3,6 +3,11 @@ discord-xmpp
 
 A bot for Discord that transfers chat messages between a Discord channel and a XMPP-based Multi-user Chatroom (MUC). It runs on node.js, and utilizes discord.js, node-xmpp-client, and tinyurl. 
 
+**DS notes**
+------------
+Installed on chat server as a service (discord-xmpp) added #!/usr/bin/env node at top to facilitate and had to change app.js slightly to account for changes in node-xmpp specification of SASL authentication methods.
+-- elfindreams
+
 **Installation**
 -------------
 
