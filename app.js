@@ -87,8 +87,8 @@ discord.on("message", function(message) {
 	}else{
 		client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
 			.c('body')
-			.t(message.author.username + 
-				(isMe ? ' ' : ': ') +		  
+			.t((isMe ? '' : '[') + message.author.username + 
+				(isMe ? ' ' : '] ') +		  
 				content));
 	}
 
@@ -116,7 +116,7 @@ client.on('stanza', function(stanza) {
 
 		//craft and send message 
 		var sender = stanza.attrs.from.split('/')[1];
-		var message = sender + ': ' + body.getText();
+		var message = '**`[' + sender + ']`** ' + body.getText();
 		discord.sendMessage(channel, message); 
 	}
 });
