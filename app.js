@@ -114,9 +114,20 @@ client.on('stanza', function(stanza) {
 		//stanzas with empty bodys are topic changes, and are ignored
 		if (!body) return;
 
+		var bodyText = body.getText();
+		var isMe = false;
+		var matches;
+		if (matches = bodyText.match(/^\/[mM][eE] (.*)$/)) {
+			bodyText = matches[1];
+			isMe = true;
+		}
+
 		//craft and send message 
 		var sender = stanza.attrs.from.split('/')[1];
-		var message = '**`[' + sender + ']`** ' + body.getText();
+		if (isMe) 
+			var message = '_**' + sender + '** ' + bodyText + '_';
+		else
+			var message = '**`[' + sender + ']`** ' + bodyText;
 		discord.sendMessage(channel, message); 
 	}
 });
