@@ -1,8 +1,11 @@
+#!/usr/bin/env node
 const DISCORD_API_TOKEN = 'YOUR_DISCORD_API_TOKEN';
 const DISCORD_CHATROOM_ID = 'YOUR_DISCORD_CHATROOM_ID';
 const JID = 'username@XmppServerName';
 const PASSWORD = 'YOUR_PASSWORD';
 const ROOM_JID = 'chatroom@conference.XmppServerName';
+const HOST = 'XmppServerName';
+const PORT = 5222;
 
 //The name this bot will use in your XMPP Chatroom. 
 //You can change this to whatever you want
@@ -15,9 +18,11 @@ var TinyURL = require ('tinyurl');
 //initialize node-xmpp-client
 var client = new XMPP({
 	jid: JID,
-	PASSWORD: PASSWORD,
-	preferred: 'PLAIN',
-	reconnect: true
+	password: PASSWORD,
+	preferredSaslMechanism: 'PLAIN',
+	reconnect: true,
+	host: HOST,
+	port: PORT
 });
 
 //initialize discord.js
@@ -87,8 +92,8 @@ discord.on("message", function(message) {
 	}else{
 		client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
 			.c('body')
-			.t(message.author.username + 
-				(isMe ? ' ' : ': ') +		  
+			.t((isMe ? '* ' : '[') + message.author.username + 
+				(isMe ? ' ' : '] ') +		  
 				content));
 	}
 
@@ -114,9 +119,20 @@ client.on('stanza', function(stanza) {
 		//stanzas with empty bodys are topic changes, and are ignored
 		if (!body) return;
 
+		var bodyText = body.getText();
+		var isMe = false;
+		var matches;
+		if (matches = bodyText.match(/^\/[mM][eE] (.*)$/)) {
+			bodyText = matches[1];
+			isMe = true;
+		}
+
 		//craft and send message 
 		var sender = stanza.attrs.from.split('/')[1];
-		var message = sender + ': ' + body.getText();
+		if (isMe) 
+			var message = '_\* **' + sender + '** ' + bodyText + '_';
+		else
+			var message = '**`[' + sender + ']`** ' + bodyText;
 		discord.sendMessage(channel, message); 
 	}
 });

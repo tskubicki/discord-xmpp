@@ -33,14 +33,18 @@ A bot for Discord that transfers chat messages between a Discord channel and a X
 15. Open your command line and browse to the folder
 16. Type "npm install --save" and press enter. This may take a few moments to complete
 17. Open "app.js" using a text editor, and turn your attention to first five lines.
-18. On line 1, replace 'YOUR_DISCORD_API_TOKEN' with the token you got earlier. Make sure to keep it in 'quotes'
-19. On line 2, replace 'YOUR_DISCORD_CHATROOM_ID' with the id of the chatroom you want this to listen on. Again, make sure to keep it in 'quotes'
-20. On line 3, replace 'username@XmppServerName' with the JID you want to use.
-21. On line 4, replace 'YOUR_PASSWORD' with the password of the account you used on line 3.
-22. On line 5, replace 'chatroom@conference.XmppServerName' with the JID of the room you want this to listen on.
-23. Save your changes
-24. Open your command line and browse to the folder
-25. Type the command "node app.js" and press enter. If you get an error about "command not found" try using "nodejs app.js" instead.
-26. If its working, you will see two messages appear in your console:
+18. On line 2, replace 'YOUR_DISCORD_API_TOKEN' with the token you got earlier. Make sure to keep it in 'quotes'
+19. On line 3, replace 'YOUR_DISCORD_CHATROOM_ID' with the id of the chatroom you want this to listen on. Again, make sure to keep it in 'quotes'
+20. On line 4, replace 'username@XmppServerName' with the JID you want to use.
+21. On line 5, replace 'YOUR_PASSWORD' with the password of the account you used on line 3.
+22. On line 6, replace 'chatroom@conference.XmppServerName' with the JID of the room you want this to listen on.
+23. On line 7, replace 'XmppServerName' with server name;
+24. On line 8, replace 5222 with port number of server;
+25. Save your changes
+26. Open your command line and browse to the folder
+27. Type the command "node app.js" and press enter. If you get an error about "command not found" try using "nodejs app.js" instead.
+28. If its working, you will see two messages appear in your console:
 > "Successfully connected to XMPP chatroom"
 > "Successfully connected to Discord"
+
+You can also use discord-xmpp.service to install and run the process as a systemd service.
