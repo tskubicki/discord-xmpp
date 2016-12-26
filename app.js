@@ -20,6 +20,7 @@ var client = new XMPP({
 	jid: JID,
 	password: PASSWORD,
 	preferredSaslMechanism: 'PLAIN',
+	preferred: 'PLAIN',
 	reconnect: true,
 	host: HOST,
 	port: PORT
