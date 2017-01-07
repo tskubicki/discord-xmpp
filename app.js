@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 const DISCORD_API_TOKEN = 'YOUR_DISCORD_API_TOKEN';
 const DISCORD_CHATROOM_ID = 'YOUR_DISCORD_CHATROOM_ID';
-const JID = 'username@XmppServerName';
+const JID = 'username@XmppServerName/username';
 const PASSWORD = 'YOUR_PASSWORD';
 const ROOM_JID = 'chatroom@conference.XmppServerName';
 const HOST = 'XmppServerName';
 const PORT = 5222;
 
+//Random XMPP ID string ; some setups need this
+const RANDOM_ID = Math.random().toString(36).substring(2,10);
+
 //The name this bot will use in your XMPP Chatroom. 
 //You can change this to whatever you want
-const XMPP_ALIAS = '[DISCORD]'; 
+const IN_CHANNEL_BOT_NAME = '[DISCORD]'; 
 
+//Make libraries available
 var Discord = require("discord.js");
 var XMPP = require('node-xmpp-client');
 var TinyURL = require ('tinyurl');
@@ -45,7 +49,7 @@ client.on('online', function() {
 	client.send(new XMPP.Stanza('presence', {type: 'available'}));
 
 	//join the Multi-User Chatroom
-	client.send(new XMPP.Element('presence', {from: JID, to: ROOM_JID + '/' + XMPP_ALIAS}));
+	client.send(new XMPP.Element('presence', {from: JID, to: ROOM_JID + '/' + IN_CHANNEL_BOT_NAME}));
 });
 
 //discord channel object representing our chatroom
@@ -56,7 +60,6 @@ var channel = new Discord.Channel({
 
 //handle messages from discord server
 discord.on("message", function(message) {
-
 	//ignore messages from the bot itself, and any messages except those from this channel
 	if (message.author.id === discord.user.id || 
 		message.channel.id != DISCORD_CHATROOM_ID)
@@ -83,7 +86,7 @@ discord.on("message", function(message) {
 	
 	if (message.attachments.length){
 		TinyURL.shorten(message.attachments[0].url,function(res){
-			client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
+			client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 				.c('body')
 				.t(message.author.username + 
 					(isMe ? ' ' : ': ') +
@@ -91,7 +94,7 @@ discord.on("message", function(message) {
 					content));
 		});
 	}else{
-		client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat' })
+		client.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 			.c('body')
 			.t((isMe ? '* ' : '[') + message.author.username + 
 				(isMe ? ' ' : '] ') +		  
@@ -101,7 +104,7 @@ discord.on("message", function(message) {
 });
 
 client.on('stanza', function(stanza) {
-	//ignore all history -- kinda dirty, but XMPP keeps throwing chat history stanzas despite telling it otherwise
+	//@TODO ignore all history -- kinda dirty, but XMPP keeps throwing chat history stanzas despite telling it otherwise
 	//or I'm a n00b, likely the latter
 	var isHistory = false;
 	stanza.children.forEach(function(element){
@@ -111,9 +114,7 @@ client.on('stanza', function(stanza) {
 	if (isHistory) return;
 
 	// ignore everything that isn't from the chatroom, or came from the bot itself
-	if (stanza.is('message') &&
-		stanza.attrs.type === 'groupchat' &&	   
-		stanza.attrs.from !== ROOM_JID  + '/' + XMPP_ALIAS){
+	if (stanza.is('message') &&	stanza.attrs.type === 'groupchat' && stanza.attrs.from !== ROOM_JID + '/' + IN_CHANNEL_BOT_NAME){
 
 		var body = stanza.getChild('body');
 

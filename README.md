@@ -35,7 +35,7 @@ A bot for Discord that transfers chat messages between a Discord channel and a X
 17. Open "app.js" using a text editor, and turn your attention to first five lines.
 18. On line 2, replace 'YOUR_DISCORD_API_TOKEN' with the token you got earlier. Make sure to keep it in 'quotes'
 19. On line 3, replace 'YOUR_DISCORD_CHATROOM_ID' with the id of the chatroom you want this to listen on. Again, make sure to keep it in 'quotes'
-20. On line 4, replace 'username@XmppServerName' with the JID you want to use.
+20. On line 4, replace 'username@XmppServerName/alias' with the JID and alias you want to use. (note that some setups require the alias to match the username to work propperly)
 21. On line 5, replace 'YOUR_PASSWORD' with the password of the account you used on line 3.
 22. On line 6, replace 'chatroom@conference.XmppServerName' with the JID of the room you want this to listen on.
 23. On line 7, replace 'XmppServerName' with server name;
