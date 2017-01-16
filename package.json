@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/tskubicki/discord-xmpp#readme",
   "dependencies": {
-    "discord.js": "^8.0.0",
-    "node-xmpp-client": "^3.0.2",
+    "discord.js": "^11.0.0",
+    "node-xmpp-client": "^3.1.1",
     "tinyurl": "^1.1.0"
   }
 }
