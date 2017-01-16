@@ -43,7 +43,8 @@ A bot for Discord that transfers chat messages between a Discord channel and a X
 25. Save your changes
 26. Open your command line and browse to the folder
 27. Type the command "node app.js" and press enter. If you get an error about "command not found" try using "nodejs app.js" instead.
-28. If its working, you will see two messages appear in your console:
+28. If its working, you will see three messages appear in your console:
+> "Successfully authenticated with your_JID"
 > "Successfully connected to XMPP chatroom"
 > "Successfully connected to Discord"
 
