@@ -160,7 +160,7 @@ xmpp.on('error', function(e) {
 });
 
 xmpp.on('online', function() {
-        console.log("Connected to XMPP server")
+        console.log("Successfully connected to XMPP with 0 errors")
 })
 
 //XMPP Server keep-alive
