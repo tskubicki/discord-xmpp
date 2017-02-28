@@ -133,6 +133,9 @@ xmpp.on('online', function() {
 
 	//join the Multi-User Chatroom
 	xmpp.send(new XMPP.Element('presence', {from: JID, to: ROOM_JID + '/' + IN_CHANNEL_BOT_NAME}));
+	
+	xmpp.send(new XMPP.Element('presence', {to: ROOM_JID +'/' + IN_CHANNEL_BOT_NAME})
+	    .c('x', { xmlns: 'http://jabber.org/protocol/muc' }));
 });
 
 xmpp.on('auth', function(){
