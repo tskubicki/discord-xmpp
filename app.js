@@ -101,13 +101,16 @@ discord.on("message", function(message) {
 		TinyURL.shorten(message.attachments[0].url,function(res){
 			xmpp.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 				.c('body')
-				.t(message.author.username + 
+				.t((message.member.nickname ? message.member.nickname : message.author.username) + 
 					(isMe ? ' ' : ': ') +
 					(message.attachments.length ? res + ' ' : '') + 
 					content));
 		});
 	}else{
-		var message = (isMe ? '* ' : '[') + message.author.username + (isMe ? ' ' : '] ') +	content;
+		var message = (isMe ? '* ' : '[') + 
+					  (message.member.nickname ? message.member.nickname : message.author.username) + 
+					  (isMe ? ' ' : '] ') +	content;
+					  
 		xmpp.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 			.c('body')
 			.t(message));
