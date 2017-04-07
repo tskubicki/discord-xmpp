@@ -21,9 +21,9 @@ var xmppKeepAlivesSent = 0; //Keep track of XMPP keepAlives sent since the last 
 var fs = null;
 
 //Make libraries available
-var Discord = require("discord.js");
-var XMPP = require('node-xmpp-client');
-var TinyURL = require ('tinyurl');
+var Discord = require("discord.js"),
+	XMPP = require('node-xmpp-client'),
+	TinyURL = require ('tinyurl');
 
 //Initialize Debug logging if enabled
 if (DEBUG){
@@ -55,7 +55,7 @@ var discord = new Discord.Client({autoReconnect: true});
 discord.login(DISCORD_API_TOKEN);
 
 //discord Channel object representing our chatroom
-var channel = new Discord.Channel({
+var channel = new Discord.TextChannel({
 	id: DISCORD_CHATROOM_ID,
 	client: "bot"
 });
@@ -66,7 +66,7 @@ if (DEBUG) discord.on('debug', function(msg){ addLog("[Discord] " + msg) })
 
 //report that discord is connected
 discord.on('ready', function(){
-	discord.channel = discord.channels.first();
+	discord.channel = discord.channels.get(DISCORD_CHATROOM_ID);
 	console.log("Successfully connected to Discord.");
 	if (DEBUG) addLog("[Discord] Successfully connected to Discord.");
 });
@@ -78,8 +78,8 @@ discord.on("message", function(message) {
 		message.channel.id != DISCORD_CHATROOM_ID)
 		return;
 
-	var content = new String (message.content);
-	var isMe = false; //is this message using a '/me'
+	var content = new String (message.content),
+		isMe = false; //is this message using a '/me'
 
 	//handle messages with mentions
 	if (message.mentions.length){
@@ -164,20 +164,22 @@ xmpp.on('stanza', function(stanza) {
 		//stanzas with empty bodys are topic changes, and are ignored
 		if (!body) return;
 
-		var bodyText = body.getText();
-		var isMe = false;
-		var matches;
+		var bodyText = body.getText(),
+			isMe = false,
+			matches;
 		if (matches = bodyText.match(/^\/[mM][eE] (.*)$/)) {
 			bodyText = matches[1];
 			isMe = true;
 		}
 
 		//craft and send message 
-		var sender = stanza.attrs.from.split('/')[1];
+		var sender = stanza.attrs.from.split('/')[1],
+			message = '';
 		if (isMe) 
-			var message = '_\* **' + sender + '** ' + bodyText + '_';
+			message = '_\* **' + sender + '** ' + bodyText + '_';
 		else
-			var message = '**`[' + sender + ']`** ' + bodyText;
+			message = '**`[' + sender + ']`** ' + bodyText;
+
 		discord.channel.sendMessage(message);
 
 		if (DEBUG){
