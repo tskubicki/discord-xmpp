@@ -10,13 +10,13 @@ const PORT = 5222;
 //Random XMPP ID string ; some setups need this
 const RANDOM_ID = Math.random().toString(36).substring(2,10);
 
-//The name this bot will use in your XMPP Chatroom. 
+//The name this bot will use in your XMPP Chatroom.
 //You can change this to whatever you want
-const IN_CHANNEL_BOT_NAME = '[DISCORD]'; 
+const IN_CHANNEL_BOT_NAME = 'Mr. Discord';
 
 //Debugging options
 const DEBUG = false; //turn on the debug log. Useful to troubleshoot issues.
-const LOG_FILE = './debug.log'; //where the log file will be saved to. Same folder this file lives in by default 
+const LOG_FILE = './debug.log'; //where the log file will be saved to. Same folder this file lives in by default
 var xmppKeepAlivesSent = 0; //Keep track of XMPP keepAlives sent since the last message
 var fs = null;
 
@@ -74,43 +74,52 @@ discord.on('ready', function(){
 //handle messages from discord server
 discord.on("message", function(message) {
 	//ignore messages from the bot itself, and any messages except those from this channel
-	if (message.author.id === discord.user.id || 
+	if (message.author.id === discord.user.id ||
 		message.channel.id != DISCORD_CHATROOM_ID)
 		return;
 
 	var content = new String (message.content),
 		isMe = false; //is this message using a '/me'
 
+	if (DEBUG) {
+		addLog('[Message - Discord to XMPP RAW Message] ' + message);
+		xmppKeepAlivesSent = 0;
+	}
 	//handle messages with mentions
-	if (message.mentions.length){
-		message.mentions.forEach(function(mention){
+	if (message.mentions.users.array().length){
+		message.mentions.users.array().forEach(function(mention){
+			if (DEBUG) {
+				addLog('[Discord to XMPP Mention replace] ' + mention.username);
+				xmppKeepAlivesSent = 0;
+			}
 			content = content.replace(
 				new RegExp('<@(!|)' + mention.id + '>', 'g'),
 				'@' + mention.username
 				);
-		});		
+		});
 	}
 
 	//handle Discord '/me' command -- its represented by an underscore at the start and end of the content
-	if (message.content[0] == '_' && message.content[message.content.length - 1] == '_'){		
+	if (message.content[0] == '_' && message.content[message.content.length - 1] == '_'){
 		isMe = true;
-		content = content.substr(1, content.length-2);	   
+		content = content.substr(1, content.length-2);
 	}
-	
-	if (message.attachments.length){
-		TinyURL.shorten(message.attachments[0].url,function(res){
+
+	if (message.attachments.array().length){
+		message.attachments.array().forEach(function(attachment){
 			xmpp.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 				.c('body')
-				.t((message.member.nickname ? message.member.nickname : message.author.username) + 
-					(isMe ? ' ' : ': ') +
-					(message.attachments.length ? res + ' ' : '') + 
-					content));
-		});
+				.t((isMe ? '* ' : '[') +
+					(message.member.nickname ? message.member.nickname : message.author.username) +
+					(isMe ? ' ' : '] ') + content +
+					(message.attachments.array().length ? "\n" : '') +
+					attachment.url));
+	        });
 	}else{
-		var message = (isMe ? '* ' : '[') + 
-					  (message.member.nickname ? message.member.nickname : message.author.username) + 
+		var message = (isMe ? '* ' : '[') +
+					  (message.member.nickname ? message.member.nickname : message.author.username) +
 					  (isMe ? ' ' : '] ') +	content;
-					  
+
 		xmpp.send(new XMPP.Stanza('message', { to: ROOM_JID, type: 'groupchat', id: RANDOM_ID })
 			.c('body')
 			.t(message));
@@ -136,7 +145,7 @@ xmpp.on('online', function() {
 
 	//join the Multi-User Chatroom
 	xmpp.send(new XMPP.Element('presence', {from: JID, to: ROOM_JID + '/' + IN_CHANNEL_BOT_NAME}));
-	
+
 	xmpp.send(new XMPP.Element('presence', {to: ROOM_JID +'/' + IN_CHANNEL_BOT_NAME})
 	    .c('x', { xmlns: 'http://jabber.org/protocol/muc' }));
 });
@@ -172,10 +181,10 @@ xmpp.on('stanza', function(stanza) {
 			isMe = true;
 		}
 
-		//craft and send message 
+		//craft and send message
 		var sender = stanza.attrs.from.split('/')[1],
 			message = '';
-		if (isMe) 
+		if (isMe)
 			message = '_\* **' + sender + '** ' + bodyText + '_';
 		else
 			message = '**`[' + sender + ']`** ' + bodyText;
